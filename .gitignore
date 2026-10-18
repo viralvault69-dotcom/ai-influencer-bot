@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+assets/generated/
+*.tmp
+deploy_to_github.py

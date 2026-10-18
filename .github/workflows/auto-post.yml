@@ -1,0 +1,93 @@
+name: AI Influencer Daily Auto-Post
+
+on:
+  schedule:
+    - cron: '30 3 * * *'
+    - cron: '30 8 * * *'
+    - cron: '30 13 * * *'
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: 'Slot to execute manually (or verify / init-character)'
+        required: true
+        default: 'morning'
+        type: choice
+        options:
+          - morning
+          - afternoon
+          - evening
+          - verify
+          - init-character
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-influencer-${{ github.event.inputs.slot || github.event.schedule || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  run-influencer-slot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install FFmpeg and Python dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Resolve target slot and execute bot
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL || 'gemini-3.8-flash' }}
+          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-nano-banana-2.1' }}
+          GEMINI_VIDEO_MODEL: ${{ vars.GEMINI_VIDEO_MODEL || 'veo-3.1-generate-preview' }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID || '6ad3ea55ae4e83b03a8ee01d' }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID || '6ad3eff6778b240e2f3fae0d' }}
+          CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+          PUBLISH_MODE: live
+          ENABLE_IMAGE_GENERATION: 'true'
+          ENABLE_VIDEO_GENERATION: 'true'
+          GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
+          MANUAL_INPUT_SLOT: ${{ github.event.inputs.slot }}
+        run: |
+          if [ "$MANUAL_INPUT_SLOT" = "verify" ]; then
+            python -m app.main --verify
+          elif [ "$MANUAL_INPUT_SLOT" = "init-character" ]; then
+            python -m app.main --init-character
+          elif [ -n "$MANUAL_INPUT_SLOT" ]; then
+            python -m app.main --slot "$MANUAL_INPUT_SLOT"
+          else
+            python -m app.main --cron "$GITHUB_EVENT_SCHEDULE"
+          fi
+
+      - name: Persist updated state and character reference to repository
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state/posted_slots.json
+          if [ -f assets/character_reference.png ]; then
+            git add assets/character_reference.png
+          fi
+          if git diff --cached --quiet; then
+            echo "No state changes to commit."
+          else
+            git commit -m "chore(state): update posted_slots state [skip ci]"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
