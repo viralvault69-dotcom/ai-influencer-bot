@@ -64,7 +64,7 @@
       "channel_id": "6ad3eff6778b240e2f3fae0d",
       "scheduling_status": "failed",
       "error_details": "All configured Gemini image models failed. Last error: This method is only supported in Gemini Enterprise Agent Platform mode, not in Gemini Developer API mode.",
-      "last_attempt_at": "2026-10-19T09:15:36Z",
+      "last_attempt_at": "2026-10-19T22:25:35Z",
       "completed_at": "",
       "content_payload": {}
     },
