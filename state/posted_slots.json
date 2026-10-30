@@ -718,6 +718,27 @@
       "last_attempt_at": "2026-10-30T10:23:47Z",
       "completed_at": "",
       "content_payload": {}
+    },
+    "2026-10-31_afternoon_2026-10-31T09:30:00Z": {
+      "slot_key": "2026-10-31_afternoon_2026-10-31T09:30:00Z",
+      "local_date": "2026-10-31",
+      "slot_name": "afternoon",
+      "due_at_utc": "2026-10-31T09:30:00Z",
+      "media_type": "REEL",
+      "pillar": "",
+      "topic": "",
+      "generation_status": "failed",
+      "content_hash": "",
+      "caption": "",
+      "local_media_path": "",
+      "asset_url": "",
+      "buffer_post_id": "",
+      "channel_id": "6ad3eff6778b240e2f3fae0d",
+      "scheduling_status": "failed",
+      "error_details": "All configured Gemini image models failed. Last error: This method is only supported in Gemini Enterprise Agent Platform mode, not in Gemini Developer API mode.",
+      "last_attempt_at": "2026-10-30T15:09:00Z",
+      "completed_at": "",
+      "content_payload": {}
     }
   },
   "recent_history": []
