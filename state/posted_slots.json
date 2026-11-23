@@ -2125,6 +2125,27 @@
       "last_attempt_at": "2026-11-22T20:27:19Z",
       "completed_at": "",
       "content_payload": {}
+    },
+    "2026-11-24_morning_2026-11-24T04:30:00Z": {
+      "slot_key": "2026-11-24_morning_2026-11-24T04:30:00Z",
+      "local_date": "2026-11-24",
+      "slot_name": "morning",
+      "due_at_utc": "2026-11-24T04:30:00Z",
+      "media_type": "IMAGE",
+      "pillar": "",
+      "topic": "",
+      "generation_status": "failed",
+      "content_hash": "",
+      "caption": "",
+      "local_media_path": "",
+      "asset_url": "",
+      "buffer_post_id": "",
+      "channel_id": "6ad3eff6778b240e2f3fae0d",
+      "scheduling_status": "failed",
+      "error_details": "Buffer GraphQL HTTP 401 error: {\"errors\":[{\"message\":\"Access token is not valid\",\"extensions\":{\"code\":\"UNAUTHENTICATED\"}}]}",
+      "last_attempt_at": "2026-11-23T13:32:43Z",
+      "completed_at": "",
+      "content_payload": {}
     }
   },
   "recent_history": []
